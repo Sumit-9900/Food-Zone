@@ -4,7 +4,7 @@ import 'package:food_client/core/routes/route_constants.dart';
 import 'package:food_client/core/theme/textstyle.dart';
 import 'package:food_client/features/onboarding/models/onboard_model.dart';
 import 'package:food_client/features/onboarding/viewmodel/cubit/onboarding_cubit.dart';
-import 'package:food_client/features/onboarding/views/widgets/build_dot.dart';
+import 'package:food_client/features/onboarding/view/widgets/build_dot.dart';
 import 'package:go_router/go_router.dart';
 
 class OnBoardPage extends StatefulWidget {

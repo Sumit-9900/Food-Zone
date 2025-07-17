@@ -25,8 +25,10 @@ class InputField extends StatelessWidget {
         enabled: true,
         obscureText: obscureText,
         validator: (value) {
-          if (value!.trim().isEmpty) {
-            return 'Please enter the $hintText';
+          if (hintText.trim() == 'Address Line 2 (Optional)') {
+            return null;
+          } else if (value!.trim().isEmpty) {
+            return 'Please enter the $hintText!';
           }
           return null;
         },

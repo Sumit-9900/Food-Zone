@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_client/core/constants/image_constants.dart';
 import 'package:food_client/core/routes/route_constants.dart';
 import 'package:food_client/core/theme/textstyle.dart';
+import 'package:food_client/core/utils/show_snackbar.dart';
+import 'package:food_client/core/widgets/loader.dart';
 import 'package:food_client/features/auth/view/widgets/auth_button.dart';
-import 'package:food_client/features/auth/view/widgets/input_field.dart';
+import 'package:food_client/core/widgets/input_field.dart';
+import 'package:food_client/features/auth/viewmodel/bloc/signup_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -18,6 +22,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -68,54 +73,75 @@ class _SignUpPageState extends State<SignUpPage> {
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: Colors.black),
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      InputField(
-                        controller: nameController,
-                        keyboardType: TextInputType.name,
-                        hintText: 'Name',
-                        icon: Icons.person_outline,
-                      ),
-                      InputField(
-                        controller: emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        hintText: 'Email',
-                        icon: Icons.email_outlined,
-                      ),
-                      InputField(
-                        controller: passwordController,
-                        keyboardType: TextInputType.visiblePassword,
-                        hintText: 'Password',
-                        icon: Icons.password_outlined,
-                        obscureText: true,
-                      ),
-                      const SizedBox(height: 20),
-                      AuthButton(
-                        textButton: // value.isLoading
-                        //     ? const CircularProgressIndicator()
-                        //     :
-                        Text(
-                          'SignUp',
-                          style: GoogleFonts.poppins(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 22,
-                          ),
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        InputField(
+                          controller: nameController,
+                          keyboardType: TextInputType.name,
+                          hintText: 'Name',
+                          icon: Icons.person_outline,
                         ),
-                        onTap: () {
-                          // context.read<UserProvider>().signUp(
-                          //       context,
-                          //       email: emailController.text.trim(),
-                          //       password: passwordController.text.trim(),
-                          //       name: nameController.text.trim(),
-                          //     );
-                          // emailController.clear();
-                          // passwordController.clear();
-                          // nameController.clear();
-                        },
-                      ),
-                    ],
+                        InputField(
+                          controller: emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          hintText: 'Email',
+                          icon: Icons.email_outlined,
+                        ),
+                        InputField(
+                          controller: passwordController,
+                          keyboardType: TextInputType.visiblePassword,
+                          hintText: 'Password',
+                          icon: Icons.password_outlined,
+                          obscureText: true,
+                        ),
+                        const SizedBox(height: 20),
+                        BlocConsumer<SignupBloc, SignupState>(
+                          listener: (context, state) {
+                            if (state is SignupFailure) {
+                              showSnackBar(
+                                context,
+                                message: state.message,
+                                color: Colors.red,
+                              );
+                            } else if (state is SignupSuccess) {
+                              context.goNamed(RouteConstants.bottomNavRoute);
+                            }
+                          },
+                          builder: (context, state) {
+                            return AuthButton(
+                              textButton:
+                                  state is SignupLoading
+                                      ? const Loader()
+                                      : Text(
+                                        'SignUp',
+                                        style: GoogleFonts.poppins(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 22,
+                                        ),
+                                      ),
+                              onTap: () {
+                                if (formKey.currentState!.validate()) {
+                                  context.read<SignupBloc>().add(
+                                    SignupCompleted(
+                                      name: nameController.text.trim(),
+                                      email: emailController.text.trim(),
+                                      password: passwordController.text.trim(),
+                                    ),
+                                  );
+                                  emailController.clear();
+                                  passwordController.clear();
+                                  nameController.clear();
+                                }
+                              },
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
