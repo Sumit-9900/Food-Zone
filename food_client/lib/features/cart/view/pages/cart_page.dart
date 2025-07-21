@@ -20,7 +20,17 @@ class CartPage extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: AppBar(title: Text('Food Cart')),
+      appBar: AppBar(
+        title: Text('Food Cart'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              context.pushNamed(RouteConstants.orderRoute);
+            },
+            icon: Icon(Icons.shopping_bag),
+          ),
+        ],
+      ),
       body: SizedBox(
         height: height,
         width: width,

@@ -1,9 +1,9 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter/material.dart';
 import 'package:food_admin/core/constants/text_constants.dart';
 import 'package:food_admin/core/failure/app_failure.dart';
 import 'package:food_admin/features/food/models/food_model.dart';
@@ -19,6 +19,15 @@ abstract interface class FoodRemoteRepository {
     required String productPrice,
   });
   Future<Either<AppFailure, void>> deleteFood(String productId);
+  Future<Either<AppFailure, void>> editFood({
+    required String productId,
+    required File? selectedImage,
+    required String image,
+    required String productCategory,
+    required String productDetail,
+    required String productName,
+    required String productPrice,
+  });
 }
 
 class FoodRemoteRepositoryImpl implements FoodRemoteRepository {
@@ -71,10 +80,9 @@ class FoodRemoteRepositoryImpl implements FoodRemoteRepository {
         productImage: downloadUrl,
         productName: productName,
         productPrice: productPrice,
-        toggleFav: false,
       );
 
-      log('Food: $food');
+      debugPrint('Food: $food');
 
       await firestore
           .collection(TextConstants.productsCollection)
@@ -106,6 +114,56 @@ class FoodRemoteRepositoryImpl implements FoodRemoteRepository {
           .delete();
 
       await querySnapshot.docs.first.reference.delete();
+
+      return right(null);
+    } catch (e) {
+      throw left(AppFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<AppFailure, void>> editFood({
+    required String productId,
+    required File? selectedImage,
+    required String image,
+    required String productCategory,
+    required String productDetail,
+    required String productName,
+    required String productPrice,
+  }) async {
+    try {
+      final querySnapshot =
+          await firestore
+              .collection(TextConstants.productsCollection)
+              .where('productId', isEqualTo: productId)
+              .get();
+
+      if (querySnapshot.docs.isEmpty) {
+        return left(AppFailure("No product found with productId: $productId}"));
+      }
+
+      String? downloadUrl;
+
+      if (selectedImage != null) {
+        final taskSnapshot = await storage
+            .ref()
+            .child(TextConstants.productImageCollection)
+            .child(productId)
+            .putFile(selectedImage);
+
+        downloadUrl = await taskSnapshot.ref.getDownloadURL();
+      }
+
+      final food = FoodModel(
+        productCategory: productCategory,
+        productDetail: productDetail,
+        productId: productId,
+        productImage: downloadUrl ?? image,
+        productName: productName,
+        productPrice: productPrice,
+      );
+
+      await querySnapshot.docs.first.reference.update(food.toMap());
 
       return right(null);
     } catch (e) {

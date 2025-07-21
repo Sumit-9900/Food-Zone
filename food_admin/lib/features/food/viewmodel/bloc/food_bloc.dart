@@ -20,6 +20,7 @@ class FoodBloc extends Bloc<FoodEvent, FoodState> {
     on<FoodAdded>(_onFoodAdded);
     on<FoodDropdownChanged>(_onDropdownChanged);
     on<FoodDeleted>(_onFoodDeleted);
+    on<FoodEdited>(_onFoodEdited);
   }
 
   void _onFoodFetched(FoodFetched event, Emitter<FoodState> emit) async {
@@ -58,6 +59,25 @@ class FoodBloc extends Bloc<FoodEvent, FoodState> {
     res.fold((l) => emit(FoodFailure(l.message)), (r) {
       add(FoodFetched());
       emit(FoodDeletedSuccess());
+    });
+  }
+
+  void _onFoodEdited(FoodEdited event, Emitter<FoodState> emit) async {
+    emit(FoodLoading());
+
+    final res = await _foodRemoteRepository.editFood(
+      productId: event.productId,
+      selectedImage: event.selectedImage,
+      image: event.image ?? '',
+      productCategory: event.productCategory,
+      productDetail: event.productDetail,
+      productName: event.productName,
+      productPrice: event.productPrice,
+    );
+
+    res.fold((l) => emit(FoodFailure(l.message)), (_) {
+      emit(FoodEditedSuccess());
+      add(FoodFetched());
     });
   }
 }

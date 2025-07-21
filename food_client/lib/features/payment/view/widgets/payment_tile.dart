@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_client/core/theme/textstyle.dart';
+import 'package:food_client/features/payment/enums/payment.dart';
 import 'package:food_client/features/payment/viewmodel/cubit/payment_cubit.dart';
 
 class PaymentTile extends StatelessWidget {
@@ -31,6 +32,7 @@ class PaymentTile extends StatelessWidget {
             context.read<PaymentCubit>().paymentTileChanged(payment);
           },
           child: Card(
+            color: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
               side: BorderSide(

@@ -7,4 +7,5 @@ class TextConstants {
   static const String favoriteProductsCollection = 'favorite_products';
   static const String cartProductsCollection = 'cart_products';
   static const String userAddressCollection = 'user_address';
+  static const String userOrdersCollection = 'user_orders';
 }

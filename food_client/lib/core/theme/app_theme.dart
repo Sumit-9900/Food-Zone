@@ -19,13 +19,9 @@ class AppTheme {
       circularTrackColor: Colors.grey,
     ),
     textButtonTheme: TextButtonThemeData(
-      
       style: ButtonStyle(
         backgroundColor: WidgetStatePropertyAll(Colors.white),
-        textStyle: WidgetStatePropertyAll(TextStyle(
-          color: Colors.black,
-
-        )),
+        textStyle: WidgetStatePropertyAll(TextStyle(color: Colors.black)),
         minimumSize: WidgetStatePropertyAll(Size(double.infinity, 60)),
         shape: WidgetStatePropertyAll(
           RoundedRectangleBorder(

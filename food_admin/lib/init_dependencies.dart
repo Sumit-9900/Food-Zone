@@ -6,8 +6,6 @@ import 'package:food_admin/features/auth/repository/auth_remote_repository.dart'
 import 'package:food_admin/features/auth/viewmodel/bloc/auth_bloc.dart';
 import 'package:food_admin/features/food/repository/food_remote_repository.dart';
 import 'package:food_admin/features/food/viewmodel/bloc/food_bloc.dart';
-import 'package:food_admin/features/order/repository/order_remote_repository.dart';
-import 'package:food_admin/features/order/viewmodel/bloc/order_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -39,18 +37,12 @@ Future<void> initDependencies() async {
     () => FoodRemoteRepositoryImpl(firestore: getIt(), storage: getIt()),
   );
 
-  getIt.registerFactory<OrderRemoteRepository>(
-    () => OrderRemoteRepositoryImpl(firestore: getIt()),
-  );
-
   // Bloc
   getIt.registerLazySingleton(
     () => AuthBloc(authRemoteRepository: getIt(), authLocalRepository: getIt()),
   );
 
   getIt.registerLazySingleton(() => FoodBloc(foodRemoteRepository: getIt()));
-
-  getIt.registerLazySingleton(() => OrderBloc(orderRemoteRepository: getIt()));
 
   // Cubit
   getIt.registerLazySingleton(() => ImagePickerCubit());

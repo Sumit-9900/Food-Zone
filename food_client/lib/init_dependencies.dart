@@ -15,6 +15,8 @@ import 'package:food_client/features/food/repository/food_remote_repository.dart
 import 'package:food_client/features/food/viewmodel/bloc/food_bloc.dart';
 import 'package:food_client/features/food/viewmodel/cubit/food_quantity_cubit.dart';
 import 'package:food_client/features/onboarding/viewmodel/cubit/onboarding_cubit.dart';
+import 'package:food_client/features/order/repository/order_remote_repository.dart';
+import 'package:food_client/features/order/viewmodel/bloc/order_bloc.dart';
 import 'package:food_client/features/payment/repository/payment_remote_repository.dart';
 import 'package:food_client/features/payment/viewmodel/cubit/payment_cubit.dart';
 import 'package:food_client/features/profile/repository/profile_remote_repository.dart';
@@ -63,6 +65,14 @@ void initDependencies() {
     () => PaymentRemoteRepositoryImpl(httpClient),
   );
 
+  getIt.registerFactory<OrderRemoteRepository>(
+    () => OrderRemoteRepositoryImpl(
+      firestore: firestore,
+      auth: auth,
+      httpClient: httpClient,
+    ),
+  );
+
   // Bloc
   getIt.registerLazySingleton(() => SignupBloc(authRemoteRepository: getIt()));
 
@@ -78,6 +88,8 @@ void initDependencies() {
       profileRemoteRepository: getIt(),
     ),
   );
+
+  getIt.registerLazySingleton(() => OrderBloc(orderRemoteRepository: getIt()));
 
   // Cubit
   getIt.registerLazySingleton(() => OnboardingCubit());

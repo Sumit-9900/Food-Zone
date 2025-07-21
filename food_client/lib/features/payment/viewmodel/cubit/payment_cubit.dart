@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:food_client/features/payment/enums/payment.dart';
 import 'package:food_client/features/payment/repository/payment_remote_repository.dart';
 
 part 'payment_state.dart';
-
-enum Payment { card, cod }
 
 class PaymentCubit extends Cubit<PaymentState> {
   final PaymentRemoteRepository _paymentRemoteRepository;
@@ -24,6 +23,8 @@ class PaymentCubit extends Cubit<PaymentState> {
     final paymentOption = _currentPayment;
 
     if (paymentOption == Payment.card) {
+      emit(PaymentLoading());
+
       final paymentIntentRes = await _paymentRemoteRepository
           .createPaymentIntent(amount);
 

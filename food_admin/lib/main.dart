@@ -1,29 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:food_admin/core/routes/app_route_config.dart';
 import 'package:food_admin/core/viewmodel/cubit/image_picker_cubit.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:food_admin/features/auth/viewmodel/bloc/auth_bloc.dart';
 import 'package:food_admin/features/food/viewmodel/bloc/food_bloc.dart';
-import 'package:food_admin/features/order/viewmodel/bloc/order_bloc.dart';
 import 'package:food_admin/init_dependencies.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
   );
 
-  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-  const FirebaseOptions options = FirebaseOptions(
-    apiKey: "AIzaSyC4AWP6gSYkZuhpF8qreEzVDGyspfoNjeo",
-    authDomain: "food-app-6f1f3.firebaseapp.com",
-    projectId: "food-app-6f1f3",
-    storageBucket: "food-app-6f1f3.appspot.com",
-    messagingSenderId: "82926148600",
-    appId: "1:82926148600:web:dae244ef4dc46ab82a940d",
-    measurementId: "G-3WWXBG9469",
+  await dotenv.load(fileName: ".env");
+
+  FirebaseOptions options = FirebaseOptions(
+    apiKey: dotenv.env['FIREBASE_API_KEY']!,
+    authDomain: dotenv.env['FIREBASE_AUTH_DOMAIN'],
+    projectId: dotenv.env['FIREBASE_PROJECT_ID']!,
+    storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET'],
+    messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID']!,
+    appId: dotenv.env['FIREBASE_APP_ID']!,
+    measurementId: dotenv.env['FIREBASE_MEASUREMENT_ID'],
   );
 
   await Firebase.initializeApp(options: options);
@@ -36,9 +40,8 @@ void main() async {
         BlocProvider(create: (_) => getIt<AuthBloc>()),
         BlocProvider(create: (_) => getIt<FoodBloc>()),
         BlocProvider(create: (_) => getIt<ImagePickerCubit>()),
-        BlocProvider(create: (_) => getIt<OrderBloc>()),
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }

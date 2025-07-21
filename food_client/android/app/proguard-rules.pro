@@ -5,3 +5,4 @@
 -dontwarn com.stripe.android.pushProvisioning.PushProvisioningEphemeralKeyProvider
 # Keep Stripe classes
 -keep class com.stripe.** { *; }
+-keep class be.tramckrijte.workmanager.** { *; }

@@ -16,3 +16,5 @@ final class OrderSuccess extends OrderState {
   final List<OrderModel> orders;
   OrderSuccess(this.orders);
 }
+
+final class OrderPlaced extends OrderState {}

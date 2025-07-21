@@ -11,13 +11,19 @@ import 'package:food_client/features/cart/view/pages/shipping_page.dart';
 import 'package:food_client/features/food/models/food_model.dart';
 import 'package:food_client/features/food/view/pages/food_details_page.dart';
 import 'package:food_client/features/onboarding/view/pages/onboard_page.dart';
+import 'package:food_client/features/order/view/pages/order_page.dart';
+import 'package:food_client/features/payment/view/pages/order_confirmation_page.dart';
 import 'package:food_client/features/payment/view/pages/payment_page.dart';
 import 'package:food_client/features/profile/view/pages/terms_conditions_screen.dart';
 import 'package:go_router/go_router.dart';
 
 class RouteConfig {
-  final router = GoRouter(
+  final Listenable refreshListenable;
+  RouteConfig({required this.refreshListenable});
+
+  late final router = GoRouter(
     initialLocation: '/onboarding',
+    refreshListenable: refreshListenable,
     routes: [
       GoRoute(
         path: '/onboarding',
@@ -81,6 +87,19 @@ class RouteConfig {
           final totalPrice = state.extra as double;
           return PaymentPage(totalPrice: totalPrice);
         },
+      ),
+      GoRoute(
+        path: '/order-confirm',
+        name: RouteConstants.orderConfirmationRoute,
+        builder: (context, state) {
+          final totalPrice = state.extra as double;
+          return OrderConfirmationPage(totalPrice: totalPrice);
+        },
+      ),
+      GoRoute(
+        path: '/orders',
+        name: RouteConstants.orderRoute,
+        builder: (context, state) => const OrderPage(),
       ),
     ],
     redirect: (context, state) {

@@ -1,4 +1,5 @@
 class TextConstants {
+  static const String indianRuppee = '₹';
   static const String exception = 'An unexpected error occured!';
   static const String adminCollection = 'admin';
   static const String productsCollection = 'product-details';

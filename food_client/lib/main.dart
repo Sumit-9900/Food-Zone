@@ -15,6 +15,7 @@ import 'package:food_client/features/cart/viewmodel/cubit/cart_cubit.dart';
 import 'package:food_client/features/favorite/viewmodel/cubit/favorite_cubit.dart';
 import 'package:food_client/features/food/viewmodel/bloc/food_bloc.dart';
 import 'package:food_client/features/onboarding/viewmodel/cubit/onboarding_cubit.dart';
+import 'package:food_client/features/order/viewmodel/bloc/order_bloc.dart';
 import 'package:food_client/features/payment/viewmodel/cubit/payment_cubit.dart';
 import 'package:food_client/features/profile/viewmodel/cubit/profile_cubit.dart';
 import 'package:food_client/init_dependencies.dart';
@@ -45,10 +46,8 @@ void main() async {
 
   initDependencies();
 
-  GoRouter router = RouteConfig().router;
-  FirebaseAuth.instance.authStateChanges().listen((User? user) {
-    router.refresh();
-  });
+  final authChangeNotifier = AuthChangeNotifier();
+  GoRouter router = RouteConfig(refreshListenable: authChangeNotifier).router;
 
   Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
   await Stripe.instance.applySettings();
@@ -68,6 +67,7 @@ void main() async {
         BlocProvider(create: (_) => getIt<CartCubit>()..fetchCartProducts()),
         BlocProvider(create: (_) => getIt<AddressCubit>()..getUserAddresses()),
         BlocProvider(create: (_) => getIt<PaymentCubit>()),
+        BlocProvider(create: (_) => getIt<OrderBloc>()..add(OrderFetched())),
       ],
       child: MyApp(router: router),
     ),
@@ -87,5 +87,13 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.light,
       routerConfig: router,
     );
+  }
+}
+
+class AuthChangeNotifier extends ChangeNotifier {
+  AuthChangeNotifier() {
+    FirebaseAuth.instance.authStateChanges().listen((_) {
+      notifyListeners();
+    });
   }
 }

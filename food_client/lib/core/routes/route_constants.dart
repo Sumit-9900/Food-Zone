@@ -9,4 +9,6 @@ class RouteConstants {
   static const String shippingRoute = 'shipping';
   static const String addAddressRoute = 'add-address';
   static const String paymentRoute = 'payment';
+  static const String orderConfirmationRoute = 'order-confirm';
+  static const String orderRoute = 'orders';
 }

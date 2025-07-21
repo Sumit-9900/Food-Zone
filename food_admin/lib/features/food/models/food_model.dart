@@ -7,7 +7,6 @@ class FoodModel {
   final String productImage;
   final String productName;
   final String productPrice;
-  final bool toggleFav;
   const FoodModel({
     required this.productCategory,
     required this.productDetail,
@@ -15,7 +14,6 @@ class FoodModel {
     required this.productImage,
     required this.productName,
     required this.productPrice,
-    required this.toggleFav,
   });
 
   FoodModel copyWith({
@@ -25,7 +23,6 @@ class FoodModel {
     String? productImage,
     String? productName,
     String? productPrice,
-    bool? toggleFav,
   }) {
     return FoodModel(
       productCategory: productCategory ?? this.productCategory,
@@ -34,7 +31,6 @@ class FoodModel {
       productImage: productImage ?? this.productImage,
       productName: productName ?? this.productName,
       productPrice: productPrice ?? this.productPrice,
-      toggleFav: toggleFav ?? this.toggleFav,
     );
   }
 
@@ -46,7 +42,6 @@ class FoodModel {
       'productImage': productImage,
       'productName': productName,
       'productPrice': productPrice,
-      'toggleFav': toggleFav,
     };
   }
 
@@ -58,7 +53,6 @@ class FoodModel {
       productImage: map['productImage'] ?? '',
       productName: map['productName'] ?? '',
       productPrice: map['productPrice'] ?? '',
-      toggleFav: map['toggleFav'] ?? false,
     );
   }
 
@@ -69,7 +63,7 @@ class FoodModel {
 
   @override
   String toString() {
-    return 'FoodModel(productCategory: $productCategory, productDetail: $productDetail, productId: $productId, productImage: $productImage, productName: $productName, productPrice: $productPrice, toggleFav: $toggleFav)';
+    return 'FoodModel(productCategory: $productCategory, productDetail: $productDetail, productId: $productId, productImage: $productImage, productName: $productName, productPrice: $productPrice)';
   }
 
   @override
@@ -81,8 +75,7 @@ class FoodModel {
         other.productId == productId &&
         other.productImage == productImage &&
         other.productName == productName &&
-        other.productPrice == productPrice &&
-        other.toggleFav == toggleFav;
+        other.productPrice == productPrice;
   }
 
   @override
@@ -92,7 +85,6 @@ class FoodModel {
         productId.hashCode ^
         productImage.hashCode ^
         productName.hashCode ^
-        productPrice.hashCode ^
-        toggleFav.hashCode;
+        productPrice.hashCode;
   }
 }

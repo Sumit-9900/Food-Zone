@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_client/core/routes/route_constants.dart';
 import 'package:food_client/core/theme/textstyle.dart';
+import 'package:food_client/core/utils/address.dart';
 import 'package:food_client/features/cart/models/address_model.dart';
 import 'package:food_client/features/cart/viewmodel/cubit/address_cubit.dart';
 import 'package:go_router/go_router.dart';
@@ -20,11 +21,7 @@ class AddressTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final addressString =
-        '${address.addressLine1}, '
-        '${address.addressLine2 != null && address.addressLine2!.isNotEmpty ? '${address.addressLine2}, ' : ''}'
-        '${address.city}, '
-        '${address.postalCode}';
+    final addressString = setAddress(address);
 
     return GestureDetector(
       onTap: () {
