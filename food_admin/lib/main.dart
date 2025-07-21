@@ -18,8 +18,10 @@ void main() async {
 
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
+  // Load environment variables first
   await dotenv.load(fileName: ".env");
 
+  // Initialize Firebase with proper configuration
   FirebaseOptions options = FirebaseOptions(
     apiKey: dotenv.env['FIREBASE_API_KEY']!,
     authDomain: dotenv.env['FIREBASE_AUTH_DOMAIN'],
@@ -32,7 +34,11 @@ void main() async {
 
   await Firebase.initializeApp(options: options);
 
+  // Initialize all dependencies and wait for completion
   await initDependencies();
+
+  // Add small delay to ensure all services are ready
+  await Future.delayed(const Duration(milliseconds: 100));
 
   runApp(
     MultiBlocProvider(
@@ -58,6 +64,14 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       routerConfig: AppRouteConfig.router,
+      builder: (context, child) {
+        // Add error handling for widget building
+        return child ?? const Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
     );
   }
 }

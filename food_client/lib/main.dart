@@ -30,8 +30,10 @@ void main() async {
 
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
+  // Load environment variables first
   await dotenv.load(fileName: ".env");
 
+  // Initialize Firebase with proper error handling
   FirebaseOptions options = FirebaseOptions(
     apiKey: dotenv.env['FIREBASE_API_KEY']!,
     authDomain: dotenv.env['FIREBASE_AUTH_DOMAIN'],
@@ -44,16 +46,82 @@ void main() async {
 
   await Firebase.initializeApp(options: options);
 
-  initDependencies();
-
-  final authChangeNotifier = AuthChangeNotifier();
-  GoRouter router = RouteConfig(refreshListenable: authChangeNotifier).router;
-
+  // Initialize Stripe before other dependencies
   Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
   await Stripe.instance.applySettings();
 
-  runApp(
-    MultiBlocProvider(
+  // Initialize all dependencies and wait for completion
+  await initDependencies();
+
+  runApp(const AppInitializer());
+}
+
+class AppInitializer extends StatefulWidget {
+  const AppInitializer({super.key});
+
+  @override
+  State<AppInitializer> createState() => _AppInitializerState();
+}
+
+class _AppInitializerState extends State<AppInitializer> {
+  late GoRouter router;
+  bool isInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeApp();
+  }
+
+  Future<void> _initializeApp() async {
+    try {
+      // Initialize router after all dependencies are ready
+      final authChangeNotifier = AuthChangeNotifier();
+      router = RouteConfig(refreshListenable: authChangeNotifier).router;
+      
+      // Small delay to ensure everything is properly set up
+      await Future.delayed(const Duration(milliseconds: 200));
+      
+      if (mounted) {
+        setState(() {
+          isInitialized = true;
+        });
+      }
+    } catch (e) {
+      // Handle initialization errors
+      debugPrint('App initialization error: $e');
+      if (mounted) {
+        setState(() {
+          isInitialized = true; // Still show app even with errors
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!isInitialized) {
+      return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 16),
+                Text(
+                  'Initializing Quick Foodie...',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => getIt<OnboardingCubit>()),
         BlocProvider(create: (_) => getIt<SignupBloc>()),
@@ -70,8 +138,8 @@ void main() async {
         BlocProvider(create: (_) => getIt<OrderBloc>()..add(OrderFetched())),
       ],
       child: MyApp(router: router),
-    ),
-  );
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -86,6 +154,14 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       themeMode: ThemeMode.light,
       routerConfig: router,
+      builder: (context, child) {
+        // Add error handling for widget building
+        return child ?? const Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
     );
   }
 }

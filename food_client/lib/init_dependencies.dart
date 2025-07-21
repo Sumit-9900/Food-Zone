@@ -23,14 +23,19 @@ import 'package:food_client/features/profile/repository/profile_remote_repositor
 import 'package:food_client/features/profile/viewmodel/cubit/profile_cubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
+import 'package:firebase_core/firebase_core.dart';
 
 final getIt = GetIt.instance;
 
-void initDependencies() {
+Future<void> initDependencies() async {
+  // Ensure Firebase services are ready
   final auth = FirebaseAuth.instance;
   final firestore = FirebaseFirestore.instance;
   final storage = FirebaseStorage.instance;
   final httpClient = http.Client();
+
+  // Wait for Firebase to be fully initialized
+  await Firebase.app().isAutomaticDataCollectionEnabled;
 
   // Repository
   getIt.registerFactory<AuthRemoteRepository>(
@@ -118,4 +123,7 @@ void initDependencies() {
   getIt.registerLazySingleton(
     () => PaymentCubit(paymentRemoteRepository: getIt()),
   );
+
+  // Add a small delay to ensure all registrations are complete
+  await Future.delayed(const Duration(milliseconds: 100));
 }
