@@ -22,60 +22,55 @@ class CartProductTile extends StatelessWidget {
         elevation: 2.0,
         child: Container(
           height: 120,
-          width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: 20.0,
+              horizontal: 10.0,
               vertical: 15.0,
             ),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  Container(
-                    height: MediaQuery.of(context).size.height,
-                    width: 50,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.black),
-                    ),
-                    child: Center(
-                      child: Text(food.quantity.toString(), style: Style.text4),
+            child: Row(
+              children: [
+                Container(
+                  height: double.infinity,
+                  width: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.black),
+                  ),
+                  child: Center(
+                    child: Text(food.quantity.toString(), style: Style.text4),
+                  ),
+                ),
+                const SizedBox(width: 10.0),
+                Container(
+                  height: 80,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: CachedNetworkImage(
+                      imageUrl: food.productImage,
+                      fit: BoxFit.cover,
                     ),
                   ),
-                  const SizedBox(width: 15.0),
-                  Container(
-                    height: MediaQuery.of(context).size.height,
-                    width: 120,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: CachedNetworkImage(
-                        imageUrl: food.productImage,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 15.0),
-                  Column(
+                ),
+                const SizedBox(width: 10.0),
+                Expanded(
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
-                        width: 118,
-                        child: Text(
-                          food.productName,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: Style.text4,
-                        ),
+                      Text(
+                        food.productName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Style.text4,
                       ),
                       Row(
                         children: [
@@ -96,8 +91,8 @@ class CartProductTile extends StatelessWidget {
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

@@ -44,14 +44,20 @@ class _FoodPageState extends State<FoodPage> {
           if (state is FoodLoading) {
             return const Loader();
           } else if (state is FoodSuccess) {
-            return ListView.builder(
-              itemCount: state.foods.length,
-              itemBuilder: (context, index) {
-                return FoodTile(food: state.foods[index]);
-              },
-            );
+            return state.foods.isEmpty
+                ? const Center(child: Text('No foods available'))
+                : ListView.builder(
+                  itemCount: state.foods.length,
+                  itemBuilder: (context, index) {
+                    return FoodTile(food: state.foods[index]);
+                  },
+                );
+          } else if (state is FoodFailure) {
+            return Center(child: Text(state.message));
           } else {
-            return const SizedBox();
+            // For any other state, fetch foods and show loading
+            context.read<FoodBloc>().add(FoodFetched());
+            return const Loader();
           }
         },
       ),

@@ -23,6 +23,8 @@ final class FoodDeletedSuccess extends FoodState {}
 
 final class FoodEditedSuccess extends FoodState {}
 
+final class FoodEditCancelled extends FoodState {}
+
 class FoodCategoryChanged extends FoodState {
   final String selectedCategory;
   FoodCategoryChanged(this.selectedCategory);

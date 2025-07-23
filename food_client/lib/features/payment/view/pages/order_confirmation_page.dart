@@ -12,7 +12,7 @@ import 'package:food_client/features/payment/viewmodel/cubit/payment_cubit.dart'
 import 'package:go_router/go_router.dart';
 
 class OrderConfirmationPage extends StatelessWidget {
-   final double totalPrice; 
+  final double totalPrice;
   const OrderConfirmationPage({super.key, required this.totalPrice});
 
   @override

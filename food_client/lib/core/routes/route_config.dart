@@ -15,6 +15,7 @@ import 'package:food_client/features/order/view/pages/order_page.dart';
 import 'package:food_client/features/payment/view/pages/order_confirmation_page.dart';
 import 'package:food_client/features/payment/view/pages/payment_page.dart';
 import 'package:food_client/features/profile/view/pages/terms_conditions_screen.dart';
+import 'package:food_client/features/splash/view/pages/splash_page.dart';
 import 'package:go_router/go_router.dart';
 
 class RouteConfig {
@@ -22,9 +23,14 @@ class RouteConfig {
   RouteConfig({required this.refreshListenable});
 
   late final router = GoRouter(
-    initialLocation: '/onboarding',
+    initialLocation: '/splash',
     refreshListenable: refreshListenable,
     routes: [
+      GoRoute(
+        path: '/splash',
+        name: 'splash',
+        builder: (context, state) => const SplashPage(),
+      ),
       GoRoute(
         path: '/onboarding',
         name: RouteConstants.onBoardingRoute,
