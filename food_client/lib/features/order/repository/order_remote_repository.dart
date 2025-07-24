@@ -57,7 +57,7 @@ class OrderRemoteRepositoryImpl implements OrderRemoteRepository {
               .collection(TextConstants.productsCollection)
               .doc(uid)
               .collection(TextConstants.userOrdersCollection)
-              .orderBy('timestamp', descending: false)
+              .orderBy('timestamp', descending: true)
               .get();
 
       final orderredFoods =

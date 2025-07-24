@@ -77,9 +77,27 @@ class FoodPage extends StatelessWidget {
                                 ),
                             placeholder: (_, __) => const Loader(),
                             errorWidget:
-                                (_, __, ___) => Image.asset(
-                                  ImageConstants.profileDefaultLogo,
-                                  fit: BoxFit.cover,
+                                (_, __, ___) => CachedNetworkImage(
+                                  imageUrl: ImageConstants.profileDefaultLogo,
+                                  imageBuilder:
+                                      (context, imageProvider) => Container(
+                                        width: 40,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                  placeholder: (_, __) => const Loader(),
+                                  errorWidget:
+                                      (_, __, ___) => const Icon(
+                                        Icons.person,
+                                        size: 24,
+                                        color: Colors.white,
+                                      ),
                                 ),
                           ),
                         );

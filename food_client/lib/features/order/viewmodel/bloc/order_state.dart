@@ -17,4 +17,6 @@ final class OrderSuccess extends OrderState {
   OrderSuccess(this.orders);
 }
 
+final class OrderRemoved extends OrderState {}
+
 final class OrderPlaced extends OrderState {}

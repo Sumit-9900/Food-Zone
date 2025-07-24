@@ -17,6 +17,12 @@ class OrderPage extends StatelessWidget {
         listener: (context, state) {
           if (state is OrderFailure) {
             showSnackBar(context, message: state.message, color: Colors.red);
+          } else if (state is OrderRemoved) {
+            showSnackBar(
+              context,
+              message: 'Order removed successfully!',
+              color: Colors.green,
+            );
           }
         },
         builder: (context, state) {
@@ -27,7 +33,10 @@ class OrderPage extends StatelessWidget {
 
             return orders.isEmpty
                 ? Center(
-                  child: Text('No Orders are present!', style: Style.text1),
+                  child: Text(
+                    'No Orders are present!',
+                    style: Style.text2.copyWith(fontSize: 22.0),
+                  ),
                 )
                 : ListView.separated(
                   padding: const EdgeInsets.all(12.0),

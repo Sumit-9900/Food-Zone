@@ -47,6 +47,9 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
   void _onOrderDelete(OrderDeleted event, Emitter<OrderState> emit) async {
     final res = await _orderRemoteRepository.deleteOrder(event.docId);
 
-    res.fold((l) => emit(OrderFailure(l.message)), (r) => add(OrderFetched()));
+    res.fold((l) => emit(OrderFailure(l.message)), (r) {
+      emit(OrderRemoved());
+      add(OrderFetched());
+    });
   }
 }
