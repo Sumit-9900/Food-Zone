@@ -9,15 +9,10 @@ import 'package:food_client/features/cart/view/widgets/address_tile.dart';
 import 'package:food_client/features/cart/viewmodel/cubit/address_cubit.dart';
 import 'package:go_router/go_router.dart';
 
-class ShippingPage extends StatefulWidget {
+class ShippingPage extends StatelessWidget {
   final double totalPrice;
   const ShippingPage({super.key, required this.totalPrice});
 
-  @override
-  State<ShippingPage> createState() => _ShippingPageState();
-}
-
-class _ShippingPageState extends State<ShippingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -113,12 +108,28 @@ class _ShippingPageState extends State<ShippingPage> {
                 ],
               ),
             ),
-            Button(
-              label: 'Proceed to Payment',
-              onPressed: () {
-                context.pushNamed(
-                  RouteConstants.paymentRoute,
-                  extra: widget.totalPrice,
+            BlocBuilder<AddressCubit, AddressState>(
+              buildWhen:
+                  (previous, current) =>
+                      current is AddressFetched ||
+                      current is AddressLoading ||
+                      current is AddressFailure,
+              builder: (context, state) {
+                bool isAddressAvailable = false;
+                if (state is AddressFetched) {
+                  isAddressAvailable = state.addresses.isNotEmpty;
+                }
+                return Button(
+                  label: 'Proceed to Payment',
+                  onPressed:
+                      isAddressAvailable
+                          ? () {
+                            context.pushNamed(
+                              RouteConstants.paymentRoute,
+                              extra: totalPrice,
+                            );
+                          }
+                          : null,
                 );
               },
             ),

@@ -4,7 +4,7 @@ import 'package:food_client/core/theme/textstyle.dart';
 class Button extends StatelessWidget {
   final String? label;
   final Widget? child;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const Button({super.key, this.label, this.child, required this.onPressed});
 
@@ -21,7 +21,7 @@ class Button extends StatelessWidget {
           height: 50,
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
-            color: Colors.black,
+            color: onPressed != null ? Colors.black : Colors.grey,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Center(child: child ?? Text(label!, style: Style.text3)),
