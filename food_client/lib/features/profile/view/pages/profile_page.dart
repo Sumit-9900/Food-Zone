@@ -25,6 +25,77 @@ class _ProfilePageState extends State<ProfilePage> {
     context.read<ProfileCubit>().fetchUserDetails();
   }
 
+  Future<void> _showEditNameDialog(BuildContext context, String currentName) {
+    final nameController = TextEditingController(text: currentName);
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          title: const Text('Edit Username'),
+          content: TextField(
+            controller: nameController,
+            decoration: InputDecoration(
+              hintText: "Enter new username",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: const BorderSide(color: Colors.black),
+              ),
+            ),
+          ),
+          actions: [
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                side: const BorderSide(color: Colors.black),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            BlocBuilder<ProfileCubit, ProfileState>(
+              builder: (context, state) {
+                return ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
+                  onPressed: () {
+                    if (nameController.text.trim().isNotEmpty) {
+                      context.read<ProfileCubit>().updateUserName(
+                        nameController.text.trim(),
+                      );
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  child:
+                      state is ProfileAuthLoading
+                          ? const CircularProgressIndicator.adaptive(
+                            strokeWidth: 2.0,
+                          )
+                          : const Text('Edit'),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -124,6 +195,12 @@ class _ProfilePageState extends State<ProfilePage> {
                           icon: const Icon(Icons.person),
                           name: 'Name',
                           des: capitalizeName(name),
+                          trailing: IconButton(
+                            onPressed: () {
+                              _showEditNameDialog(context, name);
+                            },
+                            icon: const Icon(Icons.edit),
+                          ),
                         );
                       },
                     ),

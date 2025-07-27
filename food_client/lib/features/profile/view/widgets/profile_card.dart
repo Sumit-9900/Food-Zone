@@ -8,12 +8,14 @@ class ProfileCard extends StatelessWidget {
     required this.name,
     this.des = '',
     this.onTap,
+    this.trailing,
   });
 
   final Icon icon;
   final String name;
   final String? des;
   final void Function()? onTap;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +43,9 @@ class ProfileCard extends StatelessWidget {
                     Text(des!, style: Style.text8),
                 ],
               ),
+              const Spacer(),
+              trailing ?? const SizedBox.shrink(),
+              const SizedBox(width: 10),
             ],
           ),
         ),

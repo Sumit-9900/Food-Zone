@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:food_client/features/auth/repository/auth_remote_repository.dart';
 import 'package:food_client/features/auth/viewmodel/bloc/forgot_password_bloc.dart';
 import 'package:food_client/features/auth/viewmodel/bloc/login_bloc.dart';
@@ -26,11 +28,29 @@ import 'package:http/http.dart' as http;
 
 final getIt = GetIt.instance;
 
-void initDependencies() {
+Future<void> initDependencies() async {
+  FirebaseOptions options = FirebaseOptions(
+    apiKey: dotenv.env['FIREBASE_API_KEY']!,
+    authDomain: dotenv.env['FIREBASE_AUTH_DOMAIN'],
+    projectId: dotenv.env['FIREBASE_PROJECT_ID']!,
+    storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET'],
+    messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID']!,
+    appId: dotenv.env['FIREBASE_APP_ID']!,
+    measurementId: dotenv.env['FIREBASE_MEASUREMENT_ID'],
+  );
+
+  await Firebase.initializeApp(options: options);
+
   final auth = FirebaseAuth.instance;
   final firestore = FirebaseFirestore.instance;
   final storage = FirebaseStorage.instance;
   final httpClient = http.Client();
+
+  firestore.settings = const Settings(
+    persistenceEnabled: true,
+    cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
+    sslEnabled: true,
+  );
 
   // Repository
   getIt.registerFactory<AuthRemoteRepository>(

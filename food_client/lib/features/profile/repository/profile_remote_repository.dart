@@ -11,6 +11,7 @@ abstract interface class ProfileRemoteRepository {
   Future<Either<AppFailure, String>> uploadImageToFirebaseStorage(File file);
   Future<Either<AppFailure, void>> saveImageUrlToFirestore(String userImage);
   Future<Either<AppFailure, Map<String, dynamic>?>> fetchUserDetails();
+  Future<Either<AppFailure, void>> updateUserName(String name);
   User? get currentUser;
 }
 
@@ -71,6 +72,20 @@ class ProfileRemoteRepositoryImpl implements ProfileRemoteRepository {
       final userData = snapshot.data();
 
       return right(userData);
+    } catch (e) {
+      return left(AppFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<AppFailure, void>> updateUserName(String name) async {
+    try {
+      await firestore
+          .collection(TextConstants.userDetailsCollection)
+          .doc(currentUser?.uid)
+          .update({'username': name});
+
+      return right(null);
     } catch (e) {
       return left(AppFailure(e.toString()));
     }

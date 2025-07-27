@@ -47,7 +47,7 @@ class BottomNavPage extends StatelessWidget {
                   backgroundColor: Colors.white,
                   onTap: context.read<BottomNavCubit>().changeNavIndex,
                 ),
-                body: pages[selectedIndex],
+                body: SafeArea(top: false, child: pages[selectedIndex]),
               );
             },
           );

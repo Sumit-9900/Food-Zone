@@ -96,4 +96,12 @@ class ProfileCubit extends Cubit<ProfileState> {
       (_) => emit(ProfileAccountDeleted()),
     );
   }
+
+  void updateUserName(String name) async {
+    emit(ProfileAuthLoading());
+
+    final res = await _profileRemoteRepository.updateUserName(name);
+
+    res.fold((l) => emit(ProfileFailure(l.message)), (_) => fetchUserDetails());
+  }
 }
